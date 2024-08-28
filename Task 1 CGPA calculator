@@ -1,0 +1,45 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int numCourses;
+    
+    // Prompt user for number of courses
+    cout << "Enter the number of courses: ";
+    cin >> numCourses;
+    
+    if (numCourses <= 0) {
+        cout << "Invalid number of courses." << endl;
+        return 1;
+    }
+
+    // Arrays to store grades and credits
+    float *grades = new float[numCourses];
+    
+    // Input grades for each course
+    float totalPoints = 0;
+    cout << "Enter the grades for each course (on a scale of 4.0):" << endl;
+    for (int i = 0; i < numCourses; ++i) {
+        cout << "Course " << (i + 1) << ": ";
+        cin >> grades[i];
+        
+        // Validate grade input
+        if (grades[i] < 0 || grades[i] > 4.0) {
+            cout << "Invalid grade. Please enter a grade between 0 and 4.0." << endl;
+            --i; // Retry this course input
+        } else {
+            totalPoints += grades[i];
+        }
+    }
+    
+    // Calculate CGPA
+    float cgpa = totalPoints / numCourses;
+
+    // Display result
+    cout << "Your CGPA is: " << cgpa << endl;
+
+    // Clean up dynamic memory
+    delete[] grades;
+
+    return 0;
+}
