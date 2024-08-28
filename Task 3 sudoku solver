@@ -1,0 +1,97 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Define the size of the Sudoku grid
+const int SIZE = 9;
+
+// Function to print the Sudoku grid
+void printBoard(const vector<vector<int>>& board) {
+    for (int i = 0; i < SIZE; ++i) {
+        for (int j = 0; j < SIZE; ++j) {
+            cout << board[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+// Function to check if placing `num` in `row` and `col` is valid
+bool isValid(const vector<vector<int>>& board, int row, int col, int num) {
+    // Check the row
+    for (int x = 0; x < SIZE; ++x) {
+        if (board[row][x] == num) {
+            return false;
+        }
+    }
+
+    // Check the column
+    for (int x = 0; x < SIZE; ++x) {
+        if (board[x][col] == num) {
+            return false;
+        }
+    }
+
+    // Check the 3x3 box
+    int startRow = row - row % 3;
+    int startCol = col - col % 3;
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            if (board[i + startRow][j + startCol] == num) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// Function to solve the Sudoku using backtracking
+bool solveSudoku(vector<vector<int>>& board) {
+    for (int row = 0; row < SIZE; ++row) {
+        for (int col = 0; col < SIZE; ++col) {
+            if (board[row][col] == 0) { // Empty cell
+                for (int num = 1; num <= SIZE; ++num) {
+                    if (isValid(board, row, col, num)) {
+                        board[row][col] = num; // Place the number
+
+                        if (solveSudoku(board)) {
+                            return true; // Solution found
+                        }
+
+                        board[row][col] = 0; // Undo the move
+                    }
+                }
+                return false; // No valid number found, backtrack
+            }
+        }
+    }
+    return true; // All cells are filled
+}
+
+int main() {
+    // Define the Sudoku board (0 represents empty cells)
+    vector<vector<int>> board = {
+        {5, 3, 0, 0, 7, 0, 0, 0, 0},
+        {6, 0, 0, 1, 9, 5, 0, 0, 0},
+        {0, 9, 8, 0, 0, 0, 0, 6, 0},
+        {8, 0, 0, 0, 6, 0, 0, 0, 3},
+        {4, 0, 0, 8, 0, 3, 0, 0, 1},
+        {7, 0, 0, 0, 2, 0, 0, 0, 6},
+        {0, 6, 0, 0, 0, 0, 2, 8, 0},
+        {0, 0, 0, 4, 1, 9, 0, 0, 5},
+        {0, 0, 0, 0, 8, 0, 0, 7, 9}
+    };
+
+    cout << "Initial Sudoku Board:" << endl;
+    printBoard(board);
+
+    if (solveSudoku(board)) {
+        cout << "\nSolved Sudoku Board:" << endl;
+        printBoard(board);
+    } else {
+        cout << "No solution exists!" << endl;
+    }
+
+    return 0;
+}
